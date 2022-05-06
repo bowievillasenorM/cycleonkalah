@@ -5,7 +5,7 @@ RUNNING API (install and setup JAVA 8 and MAVEN in your pc)
 - go to /cycleonkalah
 - open terminal
 - mvn clean package
-- java -jar helloworld.jar
+- java -jar boardgames-0.0.1-SNAPSHOT.jar
 
 RUNNING UI (install node js in your pc)
 
