@@ -1,0 +1,84 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.sticky {
+  width: 100%;
+  padding: 5px;
+  padding-bottom: 6px;
+  background: black;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+  position: fixed;
+  /*Here's what sticks it*/
+  bottom: 0;
+  /*to the bottom of the body*/
+  left: 0;
+  /*and to the left of the body.*/
+
+  /*EFFECTS*/
+  background: rgba(0, 0, 0, 0.5);
+  /*the a value of .5 makes it transparent*/
+}
+
+.headerHeader {
+  /*position: fixed; Here's what sticks it*/
+  width: 100%;
+}
+
+a {
+  color: black !important;
+}
+
+.pits {
+  display: inline-block;
+  color: black;
+}
+
+.stores1 {
+  display: inline-block;
+  color: black;
+  position: relative;
+  bottom: -50px;
+}
+
+.stores2 {
+  display: inline-block;
+  color: black;
+  position: relative;
+  bottom: 80px;
+}
+
+.player2Row {
+  margin-left: -207px;
+}
+
+.player1Row {
+  margin-left: 75px;
+}
+
+.pitImage {
+  height: 80px;
+}
+
+.gameStatus {
+  margin-bottom: 50px;
+  text-align: left;
+  width: 20%;
+}
+
+.formRestart {
+  width: 10%;
+}
