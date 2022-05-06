@@ -7,20 +7,11 @@ import java.util.Map;
 
 public class TraditionalStrategy implements KalahGameStrategy {
 
-    public static final int NUMBER_OF_HOUSES_ON_EACH_SIDE = 6;
-
-    public static final int NUMBER_OF_SEEDS_PER_HOUSE = 4;
-
-    public static final int PLAYER1_STORE_INDEX = NUMBER_OF_HOUSES_ON_EACH_SIDE;
-    public static final int PLAYER2_STORE_INDEX = NUMBER_OF_HOUSES_ON_EACH_SIDE * 2 + 1;
-
+    public static int NUMBER_OF_HOUSES_ON_EACH_SIDE;
+    public static int NUMBER_OF_SEEDS_PER_HOUSE;
+    public static int PLAYER1_STORE_INDEX;
+    public static int PLAYER2_STORE_INDEX;
     Map<KalahGame.Player, Integer> playerStoreIndexMap;
-
-    public TraditionalStrategy() {
-        playerStoreIndexMap = new HashMap<>();
-        playerStoreIndexMap.put(KalahGame.Player.PLAYER1, PLAYER1_STORE_INDEX);
-        playerStoreIndexMap.put(KalahGame.Player.PLAYER2, PLAYER2_STORE_INDEX);
-    }
 
     @Override
     public KalahGame.KalahType getVariationType() {
@@ -28,7 +19,15 @@ public class TraditionalStrategy implements KalahGameStrategy {
     }
 
     @Override
-    public KalahGame restartKalahGame(KalahGame kalahGame) {
+    public KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds) {
+        NUMBER_OF_HOUSES_ON_EACH_SIDE = numberOfHouses;
+        NUMBER_OF_SEEDS_PER_HOUSE = numberOfSeeds;
+        PLAYER1_STORE_INDEX = NUMBER_OF_HOUSES_ON_EACH_SIDE;
+        PLAYER2_STORE_INDEX = NUMBER_OF_HOUSES_ON_EACH_SIDE * 2 + 1;
+        playerStoreIndexMap = new HashMap<>();
+        playerStoreIndexMap.put(KalahGame.Player.PLAYER1, PLAYER1_STORE_INDEX);
+        playerStoreIndexMap.put(KalahGame.Player.PLAYER2, PLAYER2_STORE_INDEX);
+
         kalahGame = new KalahGame();
         int[] housesAndStoresDefault = new int[PLAYER2_STORE_INDEX + 1];
         for (int iteration = 0; iteration < housesAndStoresDefault.length; iteration++) {
@@ -42,8 +41,51 @@ public class TraditionalStrategy implements KalahGameStrategy {
         kalahGame.setHousesAndStores(housesAndStoresDefault);
         kalahGame.setPlayerToMove(KalahGame.Player.PLAYER1);
         kalahGame.setType(KalahGame.KalahType.STANDARD);
+        kalahGame.setWinningPlayer(null);
         return kalahGame;
     }
+
+    private int sumOfPlayer1Houses(KalahGame game) {
+        int sumOfPlayer1 = 0;
+        int ctr = 0;
+        while (ctr < PLAYER1_STORE_INDEX) {
+            sumOfPlayer1 = sumOfPlayer1 + game.getHousesAndStores()[ctr];
+            ctr++;
+        }
+
+        return sumOfPlayer1;
+    }
+
+    private int sumOfPlayer2Houses(KalahGame game) {
+        int sumOfPlayer2 = 0;
+        int ctr = PLAYER1_STORE_INDEX + 1;
+        while (ctr < PLAYER2_STORE_INDEX) {
+            sumOfPlayer2 = sumOfPlayer2 + game.getHousesAndStores()[ctr];
+            ctr++;
+        }
+
+        return sumOfPlayer2;
+    }
+
+    private void setWinner(KalahGame game) {
+        int sumPlayer1 = sumOfPlayer1Houses(game);
+        int sumPlayer2 = sumOfPlayer2Houses(game);
+        int player1Final = sumPlayer1 + game.getHousesAndStores()[PLAYER1_STORE_INDEX];
+        int player2Final = sumPlayer2 + game.getHousesAndStores()[PLAYER2_STORE_INDEX];
+
+        if (sumPlayer1 == 0 || sumPlayer2 == 0) {
+            if (player1Final > player2Final) {
+                game.setWinningPlayer(KalahGame.GameStatus.WINNING_PLAYER1);
+            }
+            if (player1Final == player2Final) {
+                game.setWinningPlayer(KalahGame.GameStatus.DRAW);
+            }
+            if(player2Final > player1Final){
+                game.setWinningPlayer(KalahGame.GameStatus.WINNING_PLAYER2);
+            }
+        }
+    }
+
 
     @Override
     public KalahGame sowAndSimulate(int index, KalahGame kalahGame) {
@@ -61,10 +103,14 @@ public class TraditionalStrategy implements KalahGameStrategy {
         }
 
         for (int iteration = housesAndStores[index]; iteration > 0; iteration--) {
+
+            int indexToSteal = indexToStealFrom(nextIndexToSpreadSeed, kalahGame.getPlayerToMove());
+
             if (isIndexInPlayerHouse(nextIndexToSpreadSeed, kalahGame)
                     && housesAndStores[nextIndexToSpreadSeed] == 0
-                    && iteration == 1) {
-                stealFromOpponent(kalahGame, housesAndStores, indexToStealFrom(nextIndexToSpreadSeed, kalahGame.getPlayerToMove()));
+                    && iteration == 1
+                    && housesAndStores[indexToSteal] > 0) {
+                stealFromOpponent(kalahGame, housesAndStores, indexToSteal);
             } else {
                 housesAndStores[nextIndexToSpreadSeed] = housesAndStores[nextIndexToSpreadSeed] + 1;
             }
@@ -79,7 +125,7 @@ public class TraditionalStrategy implements KalahGameStrategy {
         if (!willLastSeedFallInStore(kalahGame.getPlayerToMove(), index, numToAddFromIndex)) {
             switchTurn(kalahGame);
         }
-
+        setWinner(kalahGame);
         return kalahGame;
     }
 
@@ -118,7 +164,6 @@ public class TraditionalStrategy implements KalahGameStrategy {
         if (kalahGame.getPlayerToMove() == KalahGame.Player.PLAYER1 && index < PLAYER1_STORE_INDEX) {
             return true;
         }
-
         if (kalahGame.getPlayerToMove() == KalahGame.Player.PLAYER2 && index > PLAYER1_STORE_INDEX && index < PLAYER2_STORE_INDEX) {
             return true;
         }

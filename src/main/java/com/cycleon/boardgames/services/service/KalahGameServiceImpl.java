@@ -25,8 +25,8 @@ public class KalahGameServiceImpl implements KalahGameService {
     }
 
     @Override
-    public KalahGame restartKalahGame(int id) {
-        games.set(id, kalahGameStrategyFactory.getKalahGameStrategyByType(games.get(id).getType()).restartKalahGame(games.get(id)));
+    public KalahGame initializeKalahGame(int id, int numberOfHouses, int numberOfSeeds) {
+        games.set(id, kalahGameStrategyFactory.getKalahGameStrategyByType(games.get(id).getType()).initializeKalahGame(games.get(id),numberOfHouses,numberOfSeeds));
         return getKalahGame(id);
     }
 

@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * this is to accomodate different variations if there are any in the future
+ */
 @Component
 public class KalahGameStrategyFactory {
     private final Map<KalahGame.KalahType, KalahGameStrategy> registry;
@@ -13,7 +16,6 @@ public class KalahGameStrategyFactory {
     public KalahGameStrategyFactory() {
         registry = new HashMap<>();
         registry.put(KalahGame.KalahType.STANDARD, new TraditionalStrategy());
-        //add new types
     }
 
     public KalahGameStrategy getKalahGameStrategyByType(KalahGame.KalahType kalahType) {
