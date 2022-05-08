@@ -4,9 +4,10 @@ import com.cycleon.boardgames.services.models.KalahGame;
 
 
 public interface KalahGameStrategy {
-    KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds);
 
-    KalahGame sowAndSimulate(int index, KalahGame kalahGame);
+  KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds);
 
-    KalahGame.KalahType getVariationType();
+  KalahGame sowAndSimulate(int index, KalahGame kalahGame);
+
+  KalahGame.KalahType getVariationType();
 }
