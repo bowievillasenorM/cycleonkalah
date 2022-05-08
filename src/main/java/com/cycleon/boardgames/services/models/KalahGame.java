@@ -6,6 +6,9 @@ public class KalahGame {
   private Player playerToMove;
   private KalahType type;
   private GameStatus winningPlayer;
+  private Boolean isCounterClockwise;
+  private Boolean isEmptyCapture;
+  private Boolean doesCountRemainingSeed;
 
   public int[] getHousesAndStores() {
     return housesAndStores;
@@ -37,6 +40,30 @@ public class KalahGame {
 
   public void setWinningPlayer(GameStatus winningPlayer) {
     this.winningPlayer = winningPlayer;
+  }
+
+  public Boolean getCounterClockwise() {
+    return isCounterClockwise;
+  }
+
+  public void setCounterClockwise(Boolean counterClockwise) {
+    isCounterClockwise = counterClockwise;
+  }
+
+  public Boolean getEmptyCapture() {
+    return isEmptyCapture;
+  }
+
+  public void setEmptyCapture(Boolean emptyCapture) {
+    isEmptyCapture = emptyCapture;
+  }
+
+  public Boolean getDoesCountRemainingSeed() {
+    return doesCountRemainingSeed;
+  }
+
+  public void setDoesCountRemainingSeed(Boolean doesCountRemainingSeed) {
+    this.doesCountRemainingSeed = doesCountRemainingSeed;
   }
 
   public enum Player {
