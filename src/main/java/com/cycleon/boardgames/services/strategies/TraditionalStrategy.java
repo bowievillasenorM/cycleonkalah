@@ -15,7 +15,8 @@ public class TraditionalStrategy implements KalahGameStrategy {
   }
 
   @Override
-  public KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds) {
+  public KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds,
+      Boolean isEmptyCapture, Boolean doesCountRemainingSeed) {
     PLAYER1_STORE_INDEX = numberOfHouses;
     PLAYER2_STORE_INDEX = numberOfHouses * 2 + 1;
 
@@ -30,6 +31,8 @@ public class TraditionalStrategy implements KalahGameStrategy {
     kalahGame.setHousesAndStores(housesAndStoresDefault);
     kalahGame.setPlayerToMove(KalahGame.Player.PLAYER1);
     kalahGame.setType(KalahGame.KalahType.STANDARD);
+    kalahGame.setDoesCountRemainingSeed(doesCountRemainingSeed);
+    kalahGame.setEmptyCapture(isEmptyCapture);
     kalahGame.setWinningPlayer(null);
     return kalahGame;
   }
@@ -59,15 +62,25 @@ public class TraditionalStrategy implements KalahGameStrategy {
     return sumOfPlayer2;
   }
 
-  private void setWinner(KalahGame game) {
+  public void setWinner(KalahGame game) {
     int PLAYER1_STORE_INDEX = game.getHousesAndStores().length / 2 - 1;
     int PLAYER2_STORE_INDEX = game.getHousesAndStores().length - 1;
+
     int sumPlayer1 = sumOfPlayer1Houses(game);
     int sumPlayer2 = sumOfPlayer2Houses(game);
-    int player1Final = sumPlayer1 + game.getHousesAndStores()[PLAYER1_STORE_INDEX];
-    int player2Final = sumPlayer2 + game.getHousesAndStores()[PLAYER2_STORE_INDEX];
+    int player1Final = 0;
+    int player2Final = 0;
 
     if (sumPlayer1 == 0 || sumPlayer2 == 0) {
+
+      if (game.getDoesCountRemainingSeed()) {
+        player1Final = sumPlayer1 + game.getHousesAndStores()[PLAYER1_STORE_INDEX];
+        player2Final = sumPlayer2 + game.getHousesAndStores()[PLAYER2_STORE_INDEX];
+      } else {
+        player2Final = game.getHousesAndStores()[PLAYER2_STORE_INDEX];
+        player1Final = game.getHousesAndStores()[PLAYER1_STORE_INDEX];
+      }
+
       if (player1Final > player2Final) {
         game.setWinningPlayer(KalahGame.GameStatus.WINNING_PLAYER1);
       }
@@ -99,12 +112,10 @@ public class TraditionalStrategy implements KalahGameStrategy {
 
       int indexToSteal = indexToStealFrom(nextIndexToSpreadSeed);
 
-      if (isIndexInPlayerHouse(nextIndexToSpreadSeed, kalahGame)
-          && housesAndStores[nextIndexToSpreadSeed] == 0
-          && iteration == 1
-          && housesAndStores[indexToSteal]
-          > 0) { //if last seed fell in house is 0 and counterpart house has value then steal
-        stealFromOpponent(kalahGame, housesAndStores, indexToSteal);
+      if (iteration == 1 //if last seed
+          && housesAndStores[nextIndexToSpreadSeed] == 0 //fell in house is 0
+          && isIndexInPlayerHouse(nextIndexToSpreadSeed, kalahGame)) { //counterpart house is 0
+        stealFromOpponent(kalahGame, indexToSteal, nextIndexToSpreadSeed);
       } else {
         housesAndStores[nextIndexToSpreadSeed] = housesAndStores[nextIndexToSpreadSeed] + 1;
       }
@@ -124,11 +135,21 @@ public class TraditionalStrategy implements KalahGameStrategy {
     return kalahGame;
   }
 
-  private void stealFromOpponent(KalahGame kalahGame, int[] housesAndStores, int indexToStealFrom) {
+  public void stealFromOpponent(KalahGame kalahGame, int indexToStealFrom,
+      int nextIndexToSpreadSeed) {
     KalahGame.Player player = kalahGame.getPlayerToMove();
-    housesAndStores[getStoreIndexOfPlayer(player)] = housesAndStores[getStoreIndexOfPlayer(player)]
-        + housesAndStores[indexToStealFrom] + 1;
-    housesAndStores[indexToStealFrom] = 0;
+    kalahGame.getHousesAndStores()[getStoreIndexOfPlayer(player)] =
+        kalahGame.getHousesAndStores()[getStoreIndexOfPlayer(player)]
+            + kalahGame.getHousesAndStores()[indexToStealFrom] + 1;
+
+    if (kalahGame.getEmptyCapture() == false
+        && kalahGame.getHousesAndStores()[indexToStealFrom] == 0) {
+      kalahGame.getHousesAndStores()[nextIndexToSpreadSeed] = 1;
+      kalahGame.getHousesAndStores()[getStoreIndexOfPlayer(player)] =
+          kalahGame.getHousesAndStores()[getStoreIndexOfPlayer(player)] - 1;
+    }
+
+    kalahGame.getHousesAndStores()[indexToStealFrom] = 0;
   }
 
   private Integer getStoreIndexOfPlayer(KalahGame.Player player) {
@@ -141,16 +162,16 @@ public class TraditionalStrategy implements KalahGameStrategy {
     return -1;
   }
 
-  private int indexToStealFrom(int index) {
+  public int indexToStealFrom(int index) {
     return PLAYER2_STORE_INDEX - index - 1;
   }
 
-  private Boolean willLastSeedFallInStore(KalahGame.Player player, int index,
+  public Boolean willLastSeedFallInStore(KalahGame.Player player, int index,
       int numOfSeedToSpread) {
     return numOfSeedToSpread + index == getStoreIndexOfPlayer(player);
   }
 
-  private void switchTurn(KalahGame kalahGame) {
+  public void switchTurn(KalahGame kalahGame) {
     KalahGame.Player player = kalahGame.getPlayerToMove();
     if (player == KalahGame.Player.PLAYER1) {
       kalahGame.setPlayerToMove(KalahGame.Player.PLAYER2);
@@ -159,7 +180,7 @@ public class TraditionalStrategy implements KalahGameStrategy {
     }
   }
 
-  private Boolean isIndexInPlayerHouse(int index, KalahGame kalahGame) {
+  public Boolean isIndexInPlayerHouse(int index, KalahGame kalahGame) {
     if (kalahGame.getPlayerToMove() == KalahGame.Player.PLAYER1 && index < PLAYER1_STORE_INDEX) {
       return true;
     }

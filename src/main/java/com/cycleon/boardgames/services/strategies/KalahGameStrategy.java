@@ -5,7 +5,8 @@ import com.cycleon.boardgames.services.models.KalahGame;
 
 public interface KalahGameStrategy {
 
-  KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds);
+  KalahGame initializeKalahGame(KalahGame kalahGame, int numberOfHouses, int numberOfSeeds,
+      Boolean isEmptyCapture, Boolean doesCountRemainingSeed);
 
   KalahGame sowAndSimulate(int index, KalahGame kalahGame);
 

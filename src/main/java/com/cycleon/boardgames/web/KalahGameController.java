@@ -29,9 +29,12 @@ public class KalahGameController {
   @ResponseBody
   public KalahGame restartKalahGame(@PathVariable int id,
       @RequestParam(name = "houses", required = false, defaultValue = "6") Integer numberOfHouses,
-      @RequestParam(name = "seeds", required = false, defaultValue = "4") Integer numberOfSeeds
+      @RequestParam(name = "seeds", required = false, defaultValue = "4") Integer numberOfSeeds,
+      @RequestParam(name = "isEmptyCapture", required = false, defaultValue = "false") Boolean isEmptyCapture,
+      @RequestParam(name = "doesCountRemainingSeed", required = false, defaultValue = "false") Boolean doesCountRemainingSeed
   ) {
-    return kalahGameService.initializeKalahGame(id, numberOfHouses, numberOfSeeds);
+    return kalahGameService.initializeKalahGame(id, numberOfHouses, numberOfSeeds, isEmptyCapture,
+        doesCountRemainingSeed);
   }
 
   @PostMapping(path = "/kalahgame/{id}/sow/{index}")

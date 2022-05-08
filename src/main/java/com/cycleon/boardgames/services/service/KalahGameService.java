@@ -12,7 +12,8 @@ public interface KalahGameService {
    * @param numberOfSeeds  number of seeds per pit for each player's side
    * @return #{@link {@link KalahGame}}
    */
-  KalahGame initializeKalahGame(int id, int numberOfHouses, int numberOfSeeds);
+  KalahGame initializeKalahGame(int id, int numberOfHouses, int numberOfSeeds,
+      Boolean isEmptyCapture, Boolean doesCountRemainingSeed);
 
   /**
    * @param id    id of the kalah game
