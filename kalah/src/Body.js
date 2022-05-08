@@ -15,8 +15,8 @@ export default class Body extends Component {
                 type: "STANDARD",
                 winningPlayer: "",
                 isCounterClockwise: false,
-                isEmptyCapture: false,
-                doesCountRemainingSeed: true
+                emptyCapture: false,
+                doesCountRemainingSeed: false
             },
             numOfHouses: 6,
             numOfSeeds: 4
@@ -26,7 +26,7 @@ export default class Body extends Component {
     }
 
     initialize() {
-        const emptycap = this.state.pagedata.isEmptyCapture ? 1 : 0;
+        const emptycap = this.state.pagedata.emptyCapture ? 1 : 0;
         const doescountremseed = this.state.pagedata.doesCountRemainingSeed ? 1 : 0;
         const requestOptions = {
             method: 'POST',
@@ -149,15 +149,15 @@ export default class Body extends Component {
     }
 
     isEmptyCaptureToggled() {
-        const newstate = this.state.pagedata;
-        newstate.isEmptyCapture = !this.state.pagedata.isEmptyCapture;
-        this.setState({ pagedata: newstate });
+        const newState = this.state.pagedata;
+        newState.emptyCapture = !this.state.pagedata.emptyCapture;
+        this.setState({pagedata:newState});
     }
 
     isRemainingSeedsToggled() {
-        const newstate = this.state.pagedata;
-        newstate.doesCountRemainingSeed = !this.state.pagedata.doesCountRemainingSeed;
-        this.setState({ pagedata: newstate });
+        const newState = this.state.pagedata;
+        newState.doesCountRemainingSeed = !this.state.pagedata.doesCountRemainingSeed;
+        this.setState({pagedata:newState});    
     }
 
     render() {
@@ -186,7 +186,7 @@ export default class Body extends Component {
                                             type="switch"
                                             id="custom-switch"
                                             label="enable empty capture rule"
-                                            defaultChecked={this.state.pagedata.isEmptyCapture}
+                                            defaultChecked={this.state.pagedata.emptyCapture}
                                             onChange={() => { this.isEmptyCaptureToggled() }}
                                         />
                                         <Form.Check
